@@ -1,101 +1,177 @@
 const connection = require("./js/connection");
 const inquirer = require("inquirer");
+const logo = require("asciiart-logo");
 
+
+const longText =
+  "Efficient employee management. " +
+  "Including reliable and secure " +
+  "data protection! ";
+logoArt();
 init();
 
 async function init() {
-  const { choice } = await inquirer.prompt({
-    name: "choice",
-    type: "list",
-    message: "What would you like to do?",
-    choices: [
-      "VIEW EMPLOYEES",
-      "VIEW EMPLOYEES BY DEPARTMENT",
-      "VIEW EMPLOYEES BY MANAGER",
-      "ADD EMPLOYEE",
-      "REMOVE EMPLOYEE",
-      "UPDATE EMPLOYEE ROLE",
-      "UPDATE EMPLOYEE MANAGER",
-      "VIEW DEPARTMENTS",
-      "ADD DEPARTMENTS",
-      "REMOVE DEPARTMENTS",
-      "VIEW ROLES",
-      "ADD ROLE",
-      "REMOVE ROLE",
-      "exit",
-    ],
-  });
-
-  switch (choice) {
-    case "VIEW EMPLOYEES":
-        viewEmployees();
-      break;
-    case "VIEW EMPLOYEES BY DEPARTMENT":
-        viewEmployeesByDepartment();
-      break;
-    case "VIEW EMPLOYEES BY MANAGER":
-        viewEmployeesByManager();
-      break;
-      case "ADD EMPLOYEE":
-        addEmployee();
-      break;
-      case "REMOVE EMPLOYEE":
-        removeEmployee();
-      break;
-      case "UPDATE EMPLOYEE ROLE":
-        updateEmployeeRole();
-      break;
-      case "UPDATE EMPLOYEE MANAGER":
-        updateEmployeeManager();
-      break;
-      case "VIEW DEPARTMENTS":
-        viewDepartment();
-      break;
-      case "ADD DEPARTMENTS":
-        addDepartment();
-      break;
-      case "REMOVE DEPARTMENTS":
-        removeDepartment();
-      break;
-      case "VIEW ROLES":
-        viewRoles();
-      break;
-      case "ADD ROLE":
-        addRole();
-      break;
-      case "REMOVE ROLE":
-        removeRole();
-      break;
-    case "exit":
-      process.exit(0);
-      break;
-    default:
-      break;
+    const { action } = await inquirer.prompt({
+      name: "action",
+      type: "list",
+      message: "What would you like to do?",
+      choices: [
+        `Add Department`,
+        `Add Role`,
+        `Add Employee`,
+        `View Departments`,
+        `View Roles`,
+        `View Employess`,
+        `Update Employee`,
+        "exit",
+      ],
+    });
+  
+    switch (action) {
+      case `Add Department`:
+        await addDepartment();
+        init();
+        break;
+      case `Add Role`:
+        await addRole();
+        init();
+        break;
+      case `Add Employee`:
+        await addEmployee();
+        init();
+        break;
+      case `View Departments`:
+        await viewDepartment();
+        init();
+        break;
+      case `View Roles`:
+        await viewRoles();
+        init();
+        break;
+      case `View Employess`:
+        await viewEmployees();
+        init();
+        break;
+    //   case `${UPDATEEMP}`:
+    //     await updateEmpRoles();
+    //     init();
+    //     break;
+      case "exit":
+        process.exit(0);
+        break;
+      default:
+        break;
+    }
   }
-}
 
 async function viewEmployees() {
-  const { dept } = await inquirer.prompt({
-    name: "artist",
-    type: "input",
-    message: "What department would you like to search for?",
-  });
-  const query = "SELECT * FROM employee_db.department;";
-  const data = await connection.query(query, { dept });
-  console.table(data);
-  init();
+
+const burrito = await connection.query("SELECT * FROM employee;")
+    console.table(burrito);
+    
+
+
 }
-// async function viewEmployeesByDepartment()
-// async function viewEmployeesByManager()
-// async function addEmployee()
-// async function removeEmployee()
-// async function updateEmployeeRole()
-// async function updateEmployeeManager()
-// async function viewDepartment()
-// async function addDepartment()
-// async function removeDepartment()
-// async function viewRoles()
-// async function addRole()
-// async function removeRole()
+
+async function addEmployee() {
+    const roleId = "select id, title from role;";
+    const roleData = await connection.query(roleId);
+    const empOpts =
+      "select id, CONCAT(first_name,' ',last_name) AS 'Name' from employee;";
+    const empData = await connection.query(empOpts);
+  
+    const emp = await inquirer.prompt([
+        {
+            name: "first_name",
+            message: `What is the Employee First Name?`,
+          },
+          {
+            name: "last_name",
+            message: `What is the Employee Last Name?`,
+          },
+          {
+            name: "role_id",
+            message: `What is the role for this Employee? `,
+            type: "list",
+            choices: roleData.map((roleItem) => ({
+              name: roleItem.title,
+              value: roleItem.id,
+            })),
+          },
+          {
+            name: "manager_id",
+            message: `Who is the Manager for this Employee? `,
+            type: "list",
+            choices: empData.map((empItem) => ({
+              name: empItem.Name,
+              value: empItem.id,
+            })),
+          },
+        ]);
+    console.log(emp.manager_id);
+    console.log(emp.role_id);
+    var query = await connection.query("INSERT INTO employee SET ?", {
+      first_name: emp.first_name,
+      last_name: emp.last_name,
+      role_id: emp.role_id,
+      manager_id: emp.manager_id,
+    });
+    console.log(` employee inserted!\n`);
+
+  }
+
+async function viewDepartment() {
+  
+    const burrito = await connection.query("SELECT * FROM department;")
+        console.table(burrito);
+      
+   
+    
+    }
+// async function addDepartment() {
+
+//     const burrito = await connection.query("SELECT * FROM employee;")
+//         console.table(burrito);
+//         connection.end();
+//       init();
+    
+//     }
+
+async function viewRoles() {
+
+    const burrito = await connection.query("SELECT * FROM role;")
+        console.table(burrito);
+      
+    
+    
+    }
+// async function addRole() {
+
+//     const burrito = await connection.query("SELECT * FROM employee;")
+//         console.table(burrito);
+//         connection.end();
+//       init();
+    
+//     }
+function logoArt() {
+  console.log(
+    logo({
+      name: "The Employee Database!",
+      font: "Speed",
+      lineChars: 10,
+      padding: 2,
+      margin: 3,
+      borderColor: "grey",
+      logoColor: "bold-blue",
+      textColor: "blue",
+    })
+      .emptyLine()
+      .right("version 1.0.0")
+      .emptyLine()
+      .center(longText)
+      .render()
+  );
+}
+
 
 
