@@ -128,14 +128,19 @@ async function viewDepartment() {
    
     
     }
-// async function addDepartment() {
+async function addDepartment() {
+  const dept = await inquirer.prompt([
+    {
+      name: "dept",
+      message: `What is the Department name?`,
+    },
+  ]);
 
-//     const burrito = await connection.query("SELECT * FROM employee;")
-//         console.table(burrito);
-//         connection.end();
-//       init();
-    
-//     }
+  var query = await connection.query("INSERT INTO department SET ?", {
+    dept: dept.dept,
+  });
+  console.log(` Department inserted!\n`);
+}
 
 async function viewRoles() {
 
@@ -145,14 +150,38 @@ async function viewRoles() {
     
     
     }
-// async function addRole() {
-
-//     const burrito = await connection.query("SELECT * FROM employee;")
-//         console.table(burrito);
-//         connection.end();
-//       init();
+    // async function addRole() {
+    //   const deptOpts = "select id, dept from department;";
+    //   const data = await connection.query(deptOpts);
     
-//     }
+    //   const role = await inquirer.prompt([
+    //     {
+    //       name: "title",
+    //       message: `What is the role name?`,
+    //     },
+    //     {
+    //       name: "salary",
+    //       message: `What is the salary for this role? `,
+    //     },
+    //     {
+    //       name: "dept_id",
+    //       message: `What is the department for this role? `,
+    //       type: "list",
+    //       choices: data,
+    //     },
+    //   ]);
+    
+    //   var newQ = `select id from department where dept = "${role.dept_id}"`;
+    //   var deptQuery = await connection.query(newQ);
+    
+    //   var query = await connection.query("INSERT INTO role SET ?", {
+    //     title: role.title,
+    //     salary: role.salary,
+    //     dept_id: role.dept_id,
+    //   });
+    //   console.log(` Role inserted!\n`);
+    // }
+    
 function logoArt() {
   console.log(
     logo({
