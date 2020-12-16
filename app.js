@@ -52,10 +52,6 @@ async function init() {
         await viewEmployees();
         init();
         break;
-    //   case `${UPDATEEMP}`:
-    //     await updateEmpRoles();
-    //     init();
-    //     break;
       case "exit":
         process.exit(0);
         break;
@@ -150,37 +146,35 @@ async function viewRoles() {
     
     
     }
-    // async function addRole() {
-    //   const deptOpts = "select id, dept from department;";
-    //   const data = await connection.query(deptOpts);
+    async function addRole() {
+      let query = "SELECT * FROM department";
+      const deptData = await connection.query(query);
+      const departmentName = deptData.map((dept) => dept.dept);
+      const { role, salary, dept } = await inquirer.prompt([
+        {
+          name: "role",
+          type: "input",
+          message: "What role would you like to add?",
+        },
+        {
+          name: "salary",
+          type: "input",
+          message: "What is the salary of this role?",
+        },
+        {
+          name: "dept",
+          type: "list",
+          message: "What department is this role in?",
+          choices: departmentName,
+        },
+      ]);
+      const deptObj = deptData.find((department) => dept === department.dept);
+      query = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
+      const data = await connection.query(query, [role, salary, deptObj.id]);
+      console.log(` Role inserted!\n`);
+
+    }
     
-    //   const role = await inquirer.prompt([
-    //     {
-    //       name: "title",
-    //       message: `What is the role name?`,
-    //     },
-    //     {
-    //       name: "salary",
-    //       message: `What is the salary for this role? `,
-    //     },
-    //     {
-    //       name: "dept_id",
-    //       message: `What is the department for this role? `,
-    //       type: "list",
-    //       choices: data,
-    //     },
-    //   ]);
-    
-    //   var newQ = `select id from department where dept = "${role.dept_id}"`;
-    //   var deptQuery = await connection.query(newQ);
-    
-    //   var query = await connection.query("INSERT INTO role SET ?", {
-    //     title: role.title,
-    //     salary: role.salary,
-    //     dept_id: role.dept_id,
-    //   });
-    //   console.log(` Role inserted!\n`);
-    // }
     
 function logoArt() {
   console.log(
