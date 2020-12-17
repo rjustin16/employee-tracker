@@ -16,39 +16,38 @@ async function init() {
       type: "list",
       message: "What would you like to do?",
       choices: [
-        `Add Department`,
-        `Add Role`,
-        `Add Employee`,
-        `View Departments`,
-        `View Roles`,
-        `View Employess`,
-        `Update Employee`,
+        "Add Department",
+        "Add Role",
+        "Add Employee",
+        "View Departments",
+        "View Roles",
+        "View Employess",
         "exit",
       ],
     });
   
     switch (action) {
-      case `Add Department`:
+      case "Add Department":
         await addDepartment();
         init();
         break;
-      case `Add Role`:
+      case "Add Role":
         await addRole();
         init();
         break;
-      case `Add Employee`:
+      case "Add Employee":
         await addEmployee();
         init();
         break;
-      case `View Departments`:
+      case "View Departments":
         await viewDepartment();
         init();
         break;
-      case `View Roles`:
+      case "View Roles":
         await viewRoles();
         init();
         break;
-      case `View Employess`:
+      case "View Employess":
         await viewEmployees();
         init();
         break;
@@ -70,24 +69,24 @@ const burrito = await connection.query("SELECT * FROM employee;")
 }
 
 async function addEmployee() {
-    const roleId = "select id, title from role;";
+    const roleId = "SELECT id, title FROM role;";
     const roleData = await connection.query(roleId);
     const empOpts =
-      "select id, CONCAT(first_name,' ',last_name) AS 'Name' from employee;";
+      "SELECT id, CONCAT(first_name,' ',last_name) AS 'Name' FROM employee;";
     const empData = await connection.query(empOpts);
   
     const emp = await inquirer.prompt([
         {
             name: "first_name",
-            message: `What is the Employee First Name?`,
+            message: "What is the Employee First Name?",
           },
           {
             name: "last_name",
-            message: `What is the Employee Last Name?`,
+            message: "What is the Employee Last Name?",
           },
           {
             name: "role_id",
-            message: `What is the role for this Employee? `,
+            message: "What is the role for this Employee?",
             type: "list",
             choices: roleData.map((roleItem) => ({
               name: roleItem.title,
@@ -96,7 +95,7 @@ async function addEmployee() {
           },
           {
             name: "manager_id",
-            message: `Who is the Manager for this Employee? `,
+            message: "Who is the Manager for this Employee?",
             type: "list",
             choices: empData.map((empItem) => ({
               name: empItem.Name,
@@ -112,7 +111,7 @@ async function addEmployee() {
       role_id: emp.role_id,
       manager_id: emp.manager_id,
     });
-    console.log(` employee inserted!\n`);
+    console.log("employee inserted!\n");
 
   }
 
@@ -169,7 +168,7 @@ async function viewRoles() {
         },
       ]);
       const deptObj = deptData.find((department) => dept === department.dept);
-      query = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
+      query = "INSERT INTO role (title, salary, dept_id) VALUES (?, ?, ?)";
       const data = await connection.query(query, [role, salary, deptObj.id]);
       console.log(` Role inserted!\n`);
 
